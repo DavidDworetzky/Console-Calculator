@@ -47,6 +47,29 @@ namespace ConsoleCalculator
             return allSubstrings;
         }
         /// <summary>
+        /// Validation method which throws if our arguments do not meet certain criteria dependent on CalculatorOptions
+        /// </summary>
+        /// <param name="arguments"></param>
+        private void ValidateArguments(IList<int> arguments)
+        {
+            //limit to x args
+            var limitCount = _calculatorOptions.LimitArgCount;
+            if (_calculatorOptions.LimitArgCount > 0 && arguments.Count > limitCount)
+            {
+                throw new ArgumentOutOfRangeException("Input", $"{arguments.Count} arguments provided when max is {limitCount}");
+            }
+            //validate and throw if negative arguments are provided
+            var negativeArguments = arguments.Where(arg => arg < 0).ToList();
+            if(_calculatorOptions.ThrowOnNegativeArguments)
+            {
+                var allNegativeArgs = negativeArguments.Select(a => a.ToString()).Aggregate(string.Empty, (x, y) => x + "," + y);
+                if(negativeArguments.Count > 0)
+                {
+                    throw new ArgumentOutOfRangeException("Input", $"arguments: {allNegativeArgs} were negative when negative arguments are not allowed");
+                }
+            }
+        }
+        /// <summary>
         /// Sum Operator
         /// </summary>
         /// <param name="input"></param>
@@ -55,13 +78,8 @@ namespace ConsoleCalculator
         {
             //split our input by delimiter
             var splitArgs = SplitByDelimiters(input).ToList();
-            //limit to x args
-            var limitCount = _calculatorOptions.LimitArgCount;
-            if(_calculatorOptions.LimitArgCount > 0 && splitArgs.Count > limitCount)
-            {
-                throw new ArgumentOutOfRangeException("Input", $"{splitArgs.Count} arguments provided when max is {limitCount}");
-            }
-            //now parse as ints to sum
+
+            //now parse as ints to validate and sum
             var parsedArgs = splitArgs.Select(arg =>
             {
                 int output;
@@ -71,7 +89,9 @@ namespace ConsoleCalculator
                     output = 0;
                 }
                 return output;
-            });
+            }).ToList();
+            //Now validate them
+            ValidateArguments(parsedArgs);
             //finally, return our sum
             var sum = parsedArgs.Sum(a => a);
             return sum;

@@ -9,9 +9,7 @@ namespace CalculatorTests
     {
         public CalculatorTests()
         {
-            var delimiters = new List<char>() { ',', '\n' };
-            var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1 };
-            _calculator = new Calculator(delimiters, options);
+            _calculator = DefaultCalculator.Default;
         }
         private Calculator _calculator;
 
@@ -32,6 +30,7 @@ namespace CalculatorTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(System.ArgumentOutOfRangeException))]
         public void TwoIntegerSumWithNegative()
         {
             string input = "4,-3";

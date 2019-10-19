@@ -7,11 +7,9 @@ namespace ConsoleCalculator
     {
         static void Main(string[] args)
         {
-            var calculatorOptions = new Models.CalculatorOptions() { LimitArgCount = -1 };
             //We choose ? as a terminator character since \n is a delimiter
             var promptRunner = new PromptRunner('?');
-            var delimiters = new List<char>() { ',', '\n' };
-            var calculator = new Calculator(delimiters, calculatorOptions);
+            var calculator = DefaultCalculator.Default;
 
             //start a read until we reach a terminator character. 
             promptRunner.StartReadlineToTerminator((input) =>
