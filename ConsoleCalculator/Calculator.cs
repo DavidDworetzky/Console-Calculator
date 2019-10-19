@@ -88,6 +88,11 @@ namespace ConsoleCalculator
                 {
                     output = 0;
                 }
+                //if number is greater than threshold, default to 0
+                if(output > _calculatorOptions.InvalidValueLimit && _calculatorOptions.InvalidValueLimit != 0)
+                {
+                    return 0;
+                }
                 return output;
             }).ToList();
             //Now validate them

@@ -15,5 +15,10 @@ namespace ConsoleCalculator.Models
         /// Throws an exception when negative arguments are passed in
         /// </summary>
         public bool ThrowOnNegativeArguments { get; set; }
+
+        /// <summary>
+        /// Values greater than this value are invalid and will be zero
+        /// </summary>
+        public int InvalidValueLimit { get; set; }
     }
 }

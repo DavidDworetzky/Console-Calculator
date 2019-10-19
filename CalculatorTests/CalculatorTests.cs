@@ -24,9 +24,17 @@ namespace CalculatorTests
         [TestMethod]
         public void TwoIntegerSum()
         {
-            string input = "1,5000";
+            string input = "1,2";
             var output = _calculator.Sum(input);
-            Assert.AreEqual(output, 5001);
+            Assert.AreEqual(output, 3);
+        }
+        
+        [TestMethod]
+        public void TwoIntegerSumAboveLimit()
+        {
+            string input = "2,1001,6";
+            var output = _calculator.Sum(input);
+            Assert.AreEqual(output, 8);
         }
 
         [TestMethod]
