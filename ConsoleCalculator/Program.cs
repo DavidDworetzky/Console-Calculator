@@ -6,7 +6,7 @@ namespace ConsoleCalculator
     {
         static void Main(string[] args)
         {
-            var calculatorOptions = new Models.CalculatorOptions() { LimitArgCount = 2 };
+            var calculatorOptions = new Models.CalculatorOptions() { LimitArgCount = -1 };
             var promptRunner = new PromptRunner();
             var calculator = new Calculator(',', calculatorOptions);
             promptRunner.Start(() =>
