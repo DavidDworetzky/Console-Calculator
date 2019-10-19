@@ -9,7 +9,7 @@ namespace ConsoleCalculator
         {
             var calculatorOptions = new Models.CalculatorOptions() { LimitArgCount = -1 };
             var promptRunner = new PromptRunner();
-            var delimiters = new List<char>() { ',' };
+            var delimiters = new List<char>() { ',', '\n' };
             var calculator = new Calculator(delimiters, calculatorOptions);
             promptRunner.Start(() =>
             {
