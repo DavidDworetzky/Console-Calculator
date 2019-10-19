@@ -8,7 +8,7 @@ namespace CalculatorTests
     {
         public CalculatorTests()
         {
-            var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = 2 };
+            var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1 };
             _calculator = new Calculator(',', options);
         }
         private Calculator _calculator;
@@ -45,12 +45,18 @@ namespace CalculatorTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(System.ArgumentOutOfRangeException))]
-        public void MoreThanTwoArgumentsThrowsException()
+        public void MoreThanTwoArgumentsDoesNotThrowException()
         {
             string input = "5,6,7";
             var output = _calculator.Sum(input);
             Assert.AreEqual(output, 18);
+        }
+        [TestMethod]
+        public void MultipleArgumentsSumTo78()
+        {
+            string input = "1,2,3,4,5,6,7,8,9,10,11,12";
+            var output = _calculator.Sum(input);
+            Assert.AreEqual(output, 78);
         }
     }
 }
