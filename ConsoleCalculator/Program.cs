@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleCalculator
 {
@@ -8,7 +9,8 @@ namespace ConsoleCalculator
         {
             var calculatorOptions = new Models.CalculatorOptions() { LimitArgCount = -1 };
             var promptRunner = new PromptRunner();
-            var calculator = new Calculator(',', calculatorOptions);
+            var delimiters = new List<char>() { ',' };
+            var calculator = new Calculator(delimiters, calculatorOptions);
             promptRunner.Start(() =>
             {
                 string input = Console.ReadLine();

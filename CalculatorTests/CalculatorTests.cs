@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ConsoleCalculator;
+using System.Collections.Generic;
 
 namespace CalculatorTests
 {
@@ -8,8 +9,9 @@ namespace CalculatorTests
     {
         public CalculatorTests()
         {
+            var delimiters = new List<char>() { ',', '\n' };
             var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1 };
-            _calculator = new Calculator(',', options);
+            _calculator = new Calculator(delimiters, options);
         }
         private Calculator _calculator;
 
@@ -57,6 +59,14 @@ namespace CalculatorTests
             string input = "1,2,3,4,5,6,7,8,9,10,11,12";
             var output = _calculator.Sum(input);
             Assert.AreEqual(output, 78);
+        }
+
+        [TestMethod]
+        public void AddsWithMultipleDelimiters()
+        {
+            string input = "1\n2,3";
+            var output = _calculator.Sum(input);
+            Assert.AreEqual(output, 6);
         }
     }
 }

@@ -12,13 +12,40 @@ namespace ConsoleCalculator
         /// Calculator takes a delimiter and options
         /// </summary>
         /// <param name="delimiter"></param>
-        public Calculator(char delimiter, CalculatorOptions calculatorOptions)
+        public Calculator(List<char> delimiters, CalculatorOptions calculatorOptions)
         {
-            _delimiter = delimiter;
+            _delimiters = delimiters;
             _calculatorOptions = calculatorOptions;
         }
-        private char _delimiter;
+        private List<char> _delimiters;
         private CalculatorOptions _calculatorOptions;
+
+        /// <summary>
+        /// Method for splitting our string with multiple delimiters
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private IEnumerable<string> SplitByDelimiters(string input)
+        {
+            List<string> allSubstrings = new List<string>();
+            allSubstrings.Add(input);
+
+            //keep splitting until we are done with all delimiters
+            foreach(var delimiter in _delimiters)
+            {
+                List<string> substrings = new List<string>();
+                //only split the substrings if delimiter is contained
+                if(input.Contains(delimiter))
+                {
+                    foreach(var substring in allSubstrings)
+                    {
+                        substrings.AddRange(substring.Split(delimiter));
+                    }
+                    allSubstrings = substrings;
+                }
+            }
+            return allSubstrings;
+        }
         /// <summary>
         /// Sum Operator
         /// </summary>
@@ -27,7 +54,7 @@ namespace ConsoleCalculator
         public int Sum(string input)
         {
             //split our input by delimiter
-            var splitArgs = input.Split(_delimiter).ToList();
+            var splitArgs = SplitByDelimiters(input).ToList();
             //limit to x args
             var limitCount = _calculatorOptions.LimitArgCount;
             if(_calculatorOptions.LimitArgCount > 0 && splitArgs.Count > limitCount)
