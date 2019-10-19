@@ -8,15 +8,21 @@ namespace ConsoleCalculator
         static void Main(string[] args)
         {
             var calculatorOptions = new Models.CalculatorOptions() { LimitArgCount = -1 };
-            var promptRunner = new PromptRunner();
+            //We choose ? as a terminator character since \n is a delimiter
+            var promptRunner = new PromptRunner('?');
             var delimiters = new List<char>() { ',', '\n' };
             var calculator = new Calculator(delimiters, calculatorOptions);
-            promptRunner.Start(() =>
+
+            //start a read until we reach a terminator character. 
+            promptRunner.StartReadlineToTerminator((input) =>
             {
-                string input = Console.ReadLine();
                 int output = calculator.Sum(input);
+                //newline
+                Console.WriteLine();
+                //then output
                 Console.WriteLine(output);
             });
         }
+
     }
 }
