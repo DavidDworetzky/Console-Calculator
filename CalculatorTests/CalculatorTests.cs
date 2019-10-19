@@ -75,5 +75,20 @@ namespace CalculatorTests
             var output = _calculator.Sum(input);
             Assert.AreEqual(output, 6);
         }
+
+        [TestMethod]
+        public void UseCustomDelimiterOfOneCharacter()
+        {
+            string input = "//#\n2#5";
+            var output = _calculator.Sum(input);
+            Assert.AreEqual(output, 7);
+        }
+        [TestMethod]
+        public void UseCustomDelimiterOfOneCharacterNewline()
+        {
+            string input = "//,\n2,ff,100";
+            var output = _calculator.Sum(input);
+            Assert.AreEqual(output, 102);
+        }
     }
 }
