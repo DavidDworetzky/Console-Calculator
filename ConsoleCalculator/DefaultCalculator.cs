@@ -11,7 +11,7 @@ namespace ConsoleCalculator
     {
         public static Calculator Default {  get
             {
-                var delimiters = new List<char>() { ',', '\n' };
+                var delimiters = new List<string>() { ",", "\n" };
                 var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1, ThrowOnNegativeArguments = true, InvalidValueLimit = 1000};
                 return new Calculator(delimiters, options);
             }

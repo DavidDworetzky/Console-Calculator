@@ -13,15 +13,15 @@ namespace ConsoleCalculator
     public class Calculator
     {
         /// <summary>
-        /// Calculator takes a delimiter and options
+        /// Calculator takes delimiters and options
         /// </summary>
         /// <param name="delimiter"></param>
-        public Calculator(List<char> delimiters, CalculatorOptions calculatorOptions)
+        public Calculator(List<string> delimiters, CalculatorOptions calculatorOptions)
         {
             _delimiters = delimiters;
             _calculatorOptions = calculatorOptions;
         }
-        private List<char> _delimiters;
+        private List<string> _delimiters;
         private CalculatorOptions _calculatorOptions;
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace ConsoleCalculator
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        private static IEnumerable<string> SplitByDelimiters(string input, List<char> delimiters)
+        private static IEnumerable<string> SplitByDelimiters(string input, List<string> delimiters)
         {
             List<string> allSubstrings = new List<string>();
             allSubstrings.Add(input);
@@ -71,31 +71,79 @@ namespace ConsoleCalculator
             }
             return allSubstrings;
         }
+
+        /// <summary>
+        /// Filters out slashes for delimiter matching
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private static string FilterSlashes(string str)
+        {
+            return str.Replace("//", string.Empty);
+        }
+
+        /// <summary>
+        /// Filters out slashes and brackets for delimiter matching
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private static string FilterSlashesAndBrackets(string str)
+        {
+            return str.Replace("//", string.Empty).Replace("[", string.Empty).Replace("]", string.Empty);
+        }
+
+        /// <summary>
+        /// Method for returning custom delimiters from a regex pattern
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private static Tuple<List<string>,string>  GetCustomDelimitersFromPattern(string pattern, string input, Func<string, string> filter)
+        {
+            var matches = Regex.Matches(input, pattern);
+            if (matches.Count > 0)
+            {
+                //get captures, get delimiter character, then return tuple and resulting string
+                var captureParts = matches[0].Captures.Select(c => c.Value);
+                //now filter based off of our filter function
+                var extraDelimiters = captureParts.Select(filter).ToList();
+                var match = matches[0];
+
+                //rest of string should be after match group
+                var remaining = input.Substring(match.Index + match.Length);
+                return Tuple.Create(extraDelimiters, remaining);
+            }
+            else
+            {
+                //default case, no extra delimiters
+                return Tuple.Create(new List<string>(), input);
+            }
+        }
+
         /// <summary>
         /// Gets the custom delimiter from the front of the input string, returns output and delimiter
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        private static Tuple<char, string> GetCustomDelimiterAndInput(string input)
+        private static Tuple<List<string>, string> GetCustomDelimiterAndInput(string input)
         {
-            //first pattern type located in subsection #6
-            string pattern1 = @"^[\/]{2}\S";
-            var match = Regex.Match(input, pattern1);
-            if(match.Success)
+            //regex patterns
+            var patterns = new List<string>() { @"^[\/]{2}(?![\[])\S{1}", @"^[\/]{2}[\[]\S*[\]]" };
+            //filters on match groups for getting delimiters
+            var filters = new List<Func<string, string>>() { FilterSlashes, FilterSlashesAndBrackets };
+            int index = 0;
+            foreach(var pattern in patterns)
             {
-                //get captures, get delimiter character, then return tuple and resulting string
-                string capturePart = match.Captures.First().Value;
-                var extraDelimiter = capturePart.Replace("//", string.Empty);
-                char delimiterResult = extraDelimiter[0];
-                //get input string without capture group
-                string inputPart = input.Replace(capturePart, string.Empty);
-                return Tuple.Create(delimiterResult, inputPart);
+                //continue trying to find matches until we have exhausted patterns
+                var delimiters = GetCustomDelimitersFromPattern(pattern, input, filters[index]);
+                if(delimiters.Item1.Count != 0)
+                {
+                    return delimiters;
+                }
+                index++;
             }
-            else
-            {
-                //default case, no extra delimiters
-                return Tuple.Create('\n', input);
-            }
+
+            return Tuple.Create(new List<string>(), input);
         }
         /// <summary>
         /// Validation method which throws if our arguments do not meet certain criteria dependent on CalculatorOptions
@@ -128,13 +176,13 @@ namespace ConsoleCalculator
         public int Sum(string input)
         {
             //first, get custom delimiter(s)
-            var delimiters = new List<char>();
+            var delimiters = new List<string>();
             delimiters.AddRange(_delimiters);
             var customDelims = GetCustomDelimiterAndInput(input);
             //if we have consumed delimiter tokens in the string, add our delimiter to list of delimiters
             if(customDelims.Item2 != input)
             {
-                delimiters.Add(customDelims.Item1);
+                delimiters.AddRange(customDelims.Item1);
             }
             //split our input by delimiter
             var splitArgs = SplitByDelimiters(input, delimiters).ToList();
