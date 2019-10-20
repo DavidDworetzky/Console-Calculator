@@ -77,19 +77,19 @@ namespace ConsoleCalculator
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private static string FilterSlashes(string str)
+        private static List<string> FilterSlashes(string str)
         {
-            return str.Replace("//", string.Empty);
+            return new List<string>() { str.Replace("//", string.Empty) };
         }
 
         /// <summary>
-        /// Filters out slashes and brackets for delimiter matching
+        /// Filters out slashes and splits brackets for delimiter matching
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private static string FilterSlashesAndBrackets(string str)
+        private static List<string> FilterSlashesAndSplitBrackets(string str)
         {
-            return str.Replace("//", string.Empty).Replace("[", string.Empty).Replace("]", string.Empty);
+            return str.Replace("//", String.Empty).Replace("[", string.Empty).Split("]").ToList();
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace ConsoleCalculator
         /// <param name="pattern"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        private static Tuple<List<string>,string>  GetCustomDelimitersFromPattern(string pattern, string input, Func<string, string> filter)
+        private static Tuple<List<string>,string>  GetCustomDelimitersFromPattern(string pattern, string input, Func<string, List<string>> filter)
         {
             var matches = Regex.Matches(input, pattern);
             if (matches.Count > 0)
@@ -106,7 +106,7 @@ namespace ConsoleCalculator
                 //get captures, get delimiter character, then return tuple and resulting string
                 var captureParts = matches[0].Captures.Select(c => c.Value);
                 //now filter based off of our filter function
-                var extraDelimiters = captureParts.Select(filter).ToList();
+                var extraDelimiters = captureParts.SelectMany(filter).ToList();
                 var match = matches[0];
 
                 //rest of string should be after match group
@@ -130,7 +130,7 @@ namespace ConsoleCalculator
             //regex patterns
             var patterns = new List<string>() { @"^[\/]{2}(?![\[])\S{1}", @"^[\/]{2}[\[]\S*[\]]" };
             //filters on match groups for getting delimiters
-            var filters = new List<Func<string, string>>() { FilterSlashes, FilterSlashesAndBrackets };
+            var filters = new List<Func<string, List<string>>>() { FilterSlashes, FilterSlashesAndSplitBrackets };
             int index = 0;
             foreach(var pattern in patterns)
             {

@@ -96,7 +96,13 @@ namespace CalculatorTests
             string input = "//[***]\n11***22***33";
             var output = _calculator.Sum(input);
             Assert.AreEqual(output, 66);
-
+        }
+        [TestMethod]
+        public void MultipleDelimitersOfAnyLength()
+        {
+            string input = "//[*][!!][r9r]\n11r9r22*hh*33!!44";
+            var output = _calculator.Sum(input);
+            Assert.AreEqual(output, 110);
         }
     }
 }
