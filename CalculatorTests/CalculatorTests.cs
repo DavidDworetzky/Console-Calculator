@@ -18,7 +18,7 @@ namespace CalculatorTests
         public void SingleIntegerSum()
         {
             string input = "20";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 20);
         }
 
@@ -26,7 +26,7 @@ namespace CalculatorTests
         public void TwoIntegerSum()
         {
             string input = "1,2";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 3);
         }
         
@@ -34,7 +34,7 @@ namespace CalculatorTests
         public void TwoIntegerSumAboveLimit()
         {
             string input = "2,1001,6";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 8);
         }
 
@@ -43,14 +43,14 @@ namespace CalculatorTests
         public void TwoIntegerSumWithNegative()
         {
             string input = "4,-3";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 1);
         }
         [TestMethod]
         public void InvalidNumbersConvertedToZero()
         {
             string input = "5,tytyt";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 5);
         }
 
@@ -58,14 +58,14 @@ namespace CalculatorTests
         public void MoreThanTwoArgumentsDoesNotThrowException()
         {
             string input = "5,6,7";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 18);
         }
         [TestMethod]
         public void MultipleArgumentsSumTo78()
         {
             string input = "1,2,3,4,5,6,7,8,9,10,11,12";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 78);
         }
 
@@ -73,7 +73,7 @@ namespace CalculatorTests
         public void AddsWithMultipleDelimiters()
         {
             string input = "1\n2,3";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 6);
         }
 
@@ -81,29 +81,56 @@ namespace CalculatorTests
         public void UseCustomDelimiterOfOneCharacter()
         {
             string input = "//#\n2#5";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 7);
         }
         [TestMethod]
         public void UseCustomDelimiterOfOneCharacterNewline()
         {
             string input = "//,\n2,ff,100";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 102);
         }
         [TestMethod]
         public void UseCustomDelimiterOfAnyLength()
         {
             string input = "//[***]\n11***22***33";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 66);
         }
         [TestMethod]
         public void MultipleDelimitersOfAnyLength()
         {
             string input = "//[*][!!][r9r]\n11r9r22*hh*33!!44";
-            var output = _calculator.Sum(input);
+            var output = _calculator.Add(input);
             Assert.AreEqual(output, 110);
+        }
+
+        //multiplication
+        [TestMethod]
+        public void MultipliesWithMultipleDelimiters()
+        {
+            string input = "1\n2,3";
+            var output = _calculator.Multiply(input);
+            Assert.AreEqual(output, 6);
+        }
+
+        //subtraction
+        [TestMethod]
+        public void SubtractsWithMultipleDelimiters()
+        {
+            string input = "1\n2,3";
+            var output = _calculator.Subtract(input);
+            Assert.AreEqual(output, -4);
+        }
+
+        //division
+        [TestMethod]
+        public void DividesWithMultipleDelimiters()
+        {
+            string input = "4\n2,1";
+            var output = _calculator.Divide(input);
+            Assert.AreEqual(output, 2);
         }
     }
 }

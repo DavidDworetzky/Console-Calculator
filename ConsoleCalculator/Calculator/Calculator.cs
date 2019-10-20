@@ -13,6 +13,13 @@ namespace ConsoleCalculator.Calculator
     /// </summary>
     public class Calculator
     {
+        private readonly Dictionary<string, Func<List<int>, int>> reducers = new Dictionary<string, Func<List<int>, int>>()
+        {
+            {"+",  System.Linq.Enumerable.Sum},
+            {"-",  Utilities.FunctionalUtilities.Subtract },
+            {"*", Utilities.FunctionalUtilities.Multiply },
+            {"/", Utilities.FunctionalUtilities.Divide }
+        };
         /// <summary>
         /// Calculator takes delimiters and options
         /// </summary>
@@ -156,11 +163,47 @@ namespace ConsoleCalculator.Calculator
             }
         }
         /// <summary>
-        /// Sum Operator
+        /// Add Operation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public int Sum(string input)
+        public int Add(string input)
+        {
+            return Operation(input, "+");
+        }
+        /// <summary>
+        /// Subtract Operation
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public int Subtract(string input)
+        {
+            return Operation(input, "-");
+        }
+        /// <summary>
+        /// Multiply Operation
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public int Multiply(string input)
+        {
+            return Operation(input, "*");
+        }
+        /// <summary>
+        /// Divide Operation
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public int Divide(string input)
+        {
+            return Operation(input, "/");
+        }
+        /// <summary>
+        /// Perform an operation on a list of input
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private int Operation(string input, string op)
         {
             //first, get custom delimiter(s)
             var delimiters = new List<string>();
@@ -184,10 +227,11 @@ namespace ConsoleCalculator.Calculator
             //log formula for calculation if we have a logger and have logging enabled
             if(_calculatorOptions.DisplayFormula)
             {
-                _logger?.LogFormula(parsedArgs.Select(arg => arg.ToString()), "+");
+                _logger?.LogFormula(parsedArgs.Select(arg => arg.ToString()), op);
             }
-            //finally, return our sum
-            var sum = parsedArgs.Sum(a => a);
+            var reducer = reducers[op];
+            //finally, return our operation
+            var sum = reducer(parsedArgs);
             return sum;
         }
     }

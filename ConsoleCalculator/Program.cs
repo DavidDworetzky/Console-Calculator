@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ConsoleCalculator.Calculator;
 
 namespace ConsoleCalculator
 {
     class Program
-    {
+    { 
         static void Main(string[] args)
         {
-            //We choose ? as a terminator character since \n is a delimiter
+            //We choose ? as a terminator character
             var promptRunner = new PromptRunner('?');
             var calculator = DefaultCalculator.Default;
 
@@ -18,7 +19,7 @@ namespace ConsoleCalculator
                 //newline
                 Console.WriteLine();
                 //calculate our sum
-                int output = calculator.Sum(input);
+                int output = calculator.Add(input);
                 //then output
                 Console.WriteLine(output);
             });
