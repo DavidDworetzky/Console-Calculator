@@ -27,7 +27,12 @@ namespace ConsoleCalculator
             do
             {
                 key = Console.ReadKey();
-                if (key.KeyChar != _terminator)
+                //if enter, treat this as a newline for our calculator
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    totalInput += Environment.NewLine;
+                }
+                else if (key.KeyChar != _terminator)
                 {
                     totalInput += key.KeyChar;
                 }

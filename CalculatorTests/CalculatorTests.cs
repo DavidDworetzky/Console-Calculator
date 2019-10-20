@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ConsoleCalculator;
 using System.Collections.Generic;
 using ConsoleCalculator.Calculator;
+using System;
 
 namespace CalculatorTests
 {
@@ -72,7 +73,7 @@ namespace CalculatorTests
         [TestMethod]
         public void AddsWithMultipleDelimiters()
         {
-            string input = "1\n2,3";
+            string input = $"1{Environment.NewLine}2,3";
             var output = _calculator.Add(input);
             Assert.AreEqual(output, 6);
         }
@@ -80,28 +81,28 @@ namespace CalculatorTests
         [TestMethod]
         public void UseCustomDelimiterOfOneCharacter()
         {
-            string input = "//#\n2#5";
+            string input = $"//#{Environment.NewLine}2#5";
             var output = _calculator.Add(input);
             Assert.AreEqual(output, 7);
         }
         [TestMethod]
         public void UseCustomDelimiterOfOneCharacterNewline()
         {
-            string input = "//,\n2,ff,100";
+            string input = $"//,{Environment.NewLine}2,ff,100";
             var output = _calculator.Add(input);
             Assert.AreEqual(output, 102);
         }
         [TestMethod]
         public void UseCustomDelimiterOfAnyLength()
         {
-            string input = "//[***]\n11***22***33";
+            string input = $"//[***]{Environment.NewLine}11***22***33";
             var output = _calculator.Add(input);
             Assert.AreEqual(output, 66);
         }
         [TestMethod]
         public void MultipleDelimitersOfAnyLength()
         {
-            string input = "//[*][!!][r9r]\n11r9r22*hh*33!!44";
+            string input = $"//[*][!!][r9r]{Environment.NewLine}11r9r22*hh*33!!44";
             var output = _calculator.Add(input);
             Assert.AreEqual(output, 110);
         }
@@ -110,7 +111,7 @@ namespace CalculatorTests
         [TestMethod]
         public void MultipliesWithMultipleDelimiters()
         {
-            string input = "1\n2,3";
+            string input = $"1{Environment.NewLine}2,3";
             var output = _calculator.Multiply(input);
             Assert.AreEqual(output, 6);
         }
@@ -119,7 +120,7 @@ namespace CalculatorTests
         [TestMethod]
         public void SubtractsWithMultipleDelimiters()
         {
-            string input = "1\n2,3";
+            string input = $"1{Environment.NewLine}2,3";
             var output = _calculator.Subtract(input);
             Assert.AreEqual(output, -4);
         }
@@ -128,7 +129,7 @@ namespace CalculatorTests
         [TestMethod]
         public void DividesWithMultipleDelimiters()
         {
-            string input = "4\n2,1";
+            string input = $"4{Environment.NewLine}2,1";
             var output = _calculator.Divide(input);
             Assert.AreEqual(output, 2);
         }
