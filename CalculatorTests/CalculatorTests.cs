@@ -3,6 +3,7 @@ using ConsoleCalculator;
 using System.Collections.Generic;
 using ConsoleCalculator.Calculator;
 using System;
+using System.IO;
 
 namespace CalculatorTests
 {
@@ -71,6 +72,22 @@ namespace CalculatorTests
         }
 
         [TestMethod]
+        public void MultipleArgumentsLogCorrectly()
+        {
+            var outputLogs = new List<string>();
+
+            var delimiters = new List<string>() { ",", Environment.NewLine };
+            var calculatorLogger = new CollectionCalculatorLogger(outputLogs);
+            var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1, ThrowOnNegativeArguments = true, InvalidValueLimit = 1000, DisplayFormula = true };
+            var calculator = new Calculator(delimiters, options, calculatorLogger);
+
+            string input = "1,2,3,4,5,6,7,8,9,10,11,12";
+            var output = calculator.Add(input);
+            Assert.AreEqual(output, 78);
+            Assert.AreEqual(outputLogs[0], "1+2+3+4+5+6+7+8+9+10+11+12");
+        }
+
+        [TestMethod]
         public void AddsWithMultipleDelimiters()
         {
             string input = $"1{Environment.NewLine}2,3";
@@ -105,6 +122,22 @@ namespace CalculatorTests
             string input = $"//[*][!!][r9r]{Environment.NewLine}11r9r22*hh*33!!44";
             var output = _calculator.Add(input);
             Assert.AreEqual(output, 110);
+        }
+
+        [TestMethod]
+        public void MultipleDelimitersOfAnyLengthLogCorrectly()
+        {
+            var outputLogs = new List<string>();
+
+            var delimiters = new List<string>() { ",", Environment.NewLine };
+            var calculatorLogger = new CollectionCalculatorLogger(outputLogs);
+            var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1, ThrowOnNegativeArguments = true, InvalidValueLimit = 1000, DisplayFormula = true };
+            var calculator = new Calculator(delimiters, options, calculatorLogger);
+
+            string input = $"//[*][!!][r9r]{Environment.NewLine}11r9r22*hh*33!!44";
+            var output = calculator.Add(input);
+            Assert.AreEqual(output, 110);
+            Assert.AreEqual(outputLogs[0], "11+22+0+33+44");
         }
 
         //multiplication

@@ -100,7 +100,7 @@ namespace ConsoleCalculator.Calculator
                 //get captures, get delimiter character, then return tuple and resulting string
                 var captureParts = matches[0].Captures.Select(c => c.Value);
                 //now filter based off of our filter function
-                var extraDelimiters = captureParts.SelectMany(filter).ToList();
+                var extraDelimiters = captureParts.SelectMany(filter).Where(d => d.Length > 0).ToList();
                 var match = matches[0];
 
                 //rest of string should be after match group
@@ -132,7 +132,9 @@ namespace ConsoleCalculator.Calculator
                 var delimiters = GetCustomDelimitersFromPattern(pattern, input, filters[index]);
                 if(delimiters.Item1.Count != 0)
                 {
-                    return delimiters;
+                    //if we found custom delimeters, strip out any newline or newline/carriage returns at the beginning of the string
+                    var strippedInput = delimiters.Item2.TrimStart('\r').TrimStart('\n');
+                    return Tuple.Create(delimiters.Item1, strippedInput);
                 }
                 index++;
             }
@@ -214,6 +216,8 @@ namespace ConsoleCalculator.Calculator
             {
                 delimiters.AddRange(customDelims.Item1);
             }
+            //adjust input to be input after delimiter tokens are taken away
+            input = customDelims.Item2;
             //split our input by delimiter
             var splitArgs = SplitByDelimiters(input, delimiters).ToList();
 
