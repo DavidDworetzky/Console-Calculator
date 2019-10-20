@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using ConsoleCalculator.Utilities;
 
-namespace ConsoleCalculator
+namespace ConsoleCalculator.Calculator
 {
     /// <summary>
     /// Calculator object that takes a string and performs mathematical operations on it
@@ -21,8 +22,14 @@ namespace ConsoleCalculator
             _delimiters = delimiters;
             _calculatorOptions = calculatorOptions;
         }
+
+        public Calculator(List<string> delimiters, CalculatorOptions calculatorOptions, ICalculatorLogger logger) : this(delimiters, calculatorOptions)
+        {
+            _logger = logger;
+        }
         private List<string> _delimiters;
         private CalculatorOptions _calculatorOptions;
+        private ICalculatorLogger _logger;
 
         /// <summary>
         /// Method to parse our token as an integer
@@ -73,26 +80,6 @@ namespace ConsoleCalculator
         }
 
         /// <summary>
-        /// Filters out slashes for delimiter matching
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        private static List<string> FilterSlashes(string str)
-        {
-            return new List<string>() { str.Replace("//", string.Empty) };
-        }
-
-        /// <summary>
-        /// Filters out slashes and splits brackets for delimiter matching
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        private static List<string> FilterSlashesAndSplitBrackets(string str)
-        {
-            return str.Replace("//", String.Empty).Replace("[", string.Empty).Split("]").ToList();
-        }
-
-        /// <summary>
         /// Method for returning custom delimiters from a regex pattern
         /// </summary>
         /// <param name="pattern"></param>
@@ -130,7 +117,7 @@ namespace ConsoleCalculator
             //regex patterns
             var patterns = new List<string>() { @"^[\/]{2}(?![\[])\S{1}", @"^[\/]{2}[\[]\S*[\]]" };
             //filters on match groups for getting delimiters
-            var filters = new List<Func<string, List<string>>>() { FilterSlashes, FilterSlashesAndSplitBrackets };
+            var filters = new List<Func<string, List<string>>>() { StringUtilities.FilterSlashes, StringUtilities.FilterSlashesAndSplitBrackets };
             int index = 0;
             foreach(var pattern in patterns)
             {
@@ -194,6 +181,11 @@ namespace ConsoleCalculator
             }).ToList();
             //Now validate them
             ValidateArguments(parsedArgs);
+            //log formula for calculation if we have a logger and have logging enabled
+            if(_calculatorOptions.DisplayFormula)
+            {
+                _logger?.LogFormula(parsedArgs.Select(arg => arg.ToString()), "+");
+            }
             //finally, return our sum
             var sum = parsedArgs.Sum(a => a);
             return sum;

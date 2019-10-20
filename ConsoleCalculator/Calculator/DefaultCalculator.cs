@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConsoleCalculator
+namespace ConsoleCalculator.Calculator
 {
     /// <summary>
     /// Provides a default calculator initialization for both tests and the console
@@ -12,8 +12,9 @@ namespace ConsoleCalculator
         public static Calculator Default {  get
             {
                 var delimiters = new List<string>() { ",", "\n" };
-                var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1, ThrowOnNegativeArguments = true, InvalidValueLimit = 1000};
-                return new Calculator(delimiters, options);
+                var calculatorLogger = new CalculatorConsoleLogger();
+                var options = new ConsoleCalculator.Models.CalculatorOptions() { LimitArgCount = -1, ThrowOnNegativeArguments = true, InvalidValueLimit = 1000, DisplayFormula = true};
+                return new Calculator(delimiters, options, calculatorLogger);
             }
         }
     }

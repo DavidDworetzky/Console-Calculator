@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ConsoleCalculator;
 using System.Collections.Generic;
+using ConsoleCalculator.Calculator;
 
 namespace CalculatorTests
 {

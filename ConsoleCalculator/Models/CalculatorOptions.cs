@@ -20,5 +20,10 @@ namespace ConsoleCalculator.Models
         /// Values greater than this value are invalid and will be zero
         /// </summary>
         public int InvalidValueLimit { get; set; }
+
+        /// <summary>
+        /// Display formula for calculator calculations
+        /// </summary>
+        public bool DisplayFormula { get; set; }
     }
 }

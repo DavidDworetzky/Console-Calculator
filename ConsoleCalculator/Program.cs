@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ConsoleCalculator.Calculator;
 
 namespace ConsoleCalculator
 {
@@ -14,9 +15,10 @@ namespace ConsoleCalculator
             //start a read until we reach a terminator character. 
             promptRunner.StartReadlineToTerminator((input) =>
             {
-                int output = calculator.Sum(input);
                 //newline
                 Console.WriteLine();
+                //calculate our sum
+                int output = calculator.Sum(input);
                 //then output
                 Console.WriteLine(output);
             });
