@@ -31,6 +31,8 @@ namespace ConsoleCalculator
                 if (key.Key == ConsoleKey.Enter)
                 {
                     totalInput += Environment.NewLine;
+                    //newline
+                    Console.WriteLine();
                 }
                 else if (key.KeyChar != _terminator)
                 {
